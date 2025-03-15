@@ -2,38 +2,69 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 
 const App = () => {
-  const [input, setInput] = useState("");
-  const [error, setError] = useState("");
-
-  const validateInput = (text) => {
-    setInput(text);
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  
+  const validateName = (text) => {
+    setName(text);
     if (text.length < 3) {
-      setError("Input must be at least 3 characters.");
+      setNameError("Name must be at least 3 characters.");
     } else {
-      setError("");
+      setNameError("");
+    }
+  };
+
+  const validateEmail = (text) => {
+    setEmail(text);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(text)) {
+      setEmailError("Enter a valid email address.");
+    } else {
+      setEmailError("");
     }
   };
 
   const handleContinue = () => {
-    if (input.length < 3) {
-      setError("Input must be at least 3 characters.");
-      return;
+    let valid = true;
+
+    if (name.length < 3) {
+      setNameError("Name must be at least 3 characters.");
+      valid = false;
     }
 
-    alert("Success! Proceeding...");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Enter a valid email address.");
+      valid = false;
+    }
+
+    if (valid) {
+      alert("Success! Proceeding...");
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Enter Name:</Text>
       <TextInput
-        style={[styles.input, error ? styles.inputError : null]}
-        placeholder="Type something..."
-        value={input}
-        onChangeText={validateInput}
+        style={[styles.input, nameError ? styles.inputError : null]}
+        placeholder="Enter your name"
+        value={name}
+        onChangeText={validateName}
       />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+
+      <Text style={styles.label}>Enter Email:</Text>
+      <TextInput
+        style={[styles.input, emailError ? styles.inputError : null]}
+        placeholder="Enter your email"
+        value={email}
+        onChangeText={validateEmail}
+        keyboardType="email-address"
+      />
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
       <TouchableOpacity style={styles.button} onPress={handleContinue}>
         <Text style={styles.buttonText}>Continue</Text>
